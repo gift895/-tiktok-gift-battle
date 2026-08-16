@@ -1,0 +1,13 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Управление Gift Battle</title>
+<style>body{font-family:Arial;background:#111;color:#fff;max-width:720px;margin:30px auto;padding:20px}input,button{font-size:18px;padding:12px;border-radius:10px;border:0;margin:5px 0;width:100%}button{cursor:pointer;font-weight:800}section{background:#1d2030;padding:20px;border-radius:18px;margin:15px 0}h1{margin-top:0}.row{display:flex;gap:10px}.row>*{flex:1}.ok{color:#6f6}.bad{color:#f77}</style></head><body>
+<h1>🎁 Управление Gift Battle</h1>
+<section><h2>TikTok LIVE</h2><input id="user" placeholder="TikTok username без @"><div class="row"><input id="gg" value="rose" placeholder="Подарок девочек"><input id="bg" value="football" placeholder="Подарок мальчиков"></div><div class="row"><button onclick="connect()">Подключить</button><button onclick="disconnect()">Отключить</button></div><p id="status">...</p></section>
+<section><h2>Тест</h2><div class="row"><button onclick="test('girls')">🌹 +1 девочкам</button><button onclick="test('boys')">⚽ +1 мальчикам</button></div><button onclick="reset()">Сбросить счёт</button></section>
+<section><p>Открой игру для OBS: <b>http://localhost:3000</b></p></section>
+<script>
+async function post(url,body){let r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});return r.json()}
+async function connect(){let r=await post("/api/connect",{username:user.value,girlsGift:gg.value,boysGift:bg.value,girlsGiftLabel:"🌹 Роза",boysGiftLabel:"⚽ Мяч"});status.textContent=r.ok?"🟢 Подключено":"🔴 "+r.error}
+async function disconnect(){await post("/api/disconnect",{});status.textContent="⚪ Отключено"}
+async function test(team){await post("/api/test",{team,points:1,giftName:team==="girls"?"Rose":"Football"})}
+async function reset(){await post("/api/reset",{});status.textContent="Счёт сброшен"}
+</script></body></html>
